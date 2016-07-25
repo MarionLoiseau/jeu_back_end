@@ -1,0 +1,42 @@
+#containerLogos {
+  border: 1px solid black;
+  width: 400px;
+  height: 300px;
+  /* pour centrer l'image */
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  /* margin: auto;*/
+}
+
+p {
+  margin: 2px;
+  
+}
+
+.containerDUnJoueur {
+  border: black 2px solid;
+  margin-top: 5px;
+  border-radius: 10px;
+  width: 400px;
+  
+}
+
+nav li {
+  display: inline;
+  margin-right: 1px ;
+  color: #fff ;
+  background: #c00 ;
+
+}
+
+nav li a {
+  padding: 4px 20px ;
+  background: #c00 ;
+  color: #fff ;
+  border: 1px solid #600 ;
+  font: 1em "Trebuchet MS",Arial,sans-serif ;
+  line-height: 1em ;
+  text-align: center ;
+  text-decoration: none ;
+}

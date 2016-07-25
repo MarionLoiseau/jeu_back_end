@@ -1,0 +1,25 @@
+doctype html(lang='fr')
+head
+    meta(charset='utf-8')     
+    script(type='text/javascript', src='../js/jquery-1.12.3.js')
+    //script(src='../js/script.js')
+    link(type='text/css', rel='stylesheet', href='../css/style.css')
+    title JeuMulti | #{nomPage}   
+body
+  nav
+    ul
+      li
+        a(href='/') Accueil / Regle du jeu
+      |                 
+      li
+        a(href='/connexion') Connexion / Jouer
+      |                 
+      li
+        a(href='/inscription') Inscription
+      |                 
+      li
+        a(href='/score') Scores      
+  h1 #{nomPage} du jeu MultiJouseurs !
+  h3 A vous d'écrire le plus possible le nom du logo
+  h3 Le premier à 10 points remporte la partie
+  h5 Marion Loiseau

@@ -1,0 +1,10 @@
+include ../includes/head.jade      
+h1 #{nomPage}
+|  
+form(action='enregistrement-joueur', method='POST')
+    label Pseudo : 
+      input(type='text', name='pseudo')
+      label Mot de passe : 
+      input(type='password', name='mdp')
+      input(type='submit', value='Confirmer')
+P #{message}

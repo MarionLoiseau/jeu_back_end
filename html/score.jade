@@ -1,0 +1,6 @@
+include ../includes/head.jade      
+h1 #{nomPage}
+h2 Top 5 des meilleurs joueurs
+each val in joueurs
+  p= val.pseudo
+  p= val.score

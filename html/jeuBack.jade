@@ -1,0 +1,159 @@
+html
+  head
+    meta(charset='utf-8')  
+    // jquery
+    script(type='text/javascript', src='../js/jquery-1.12.3.js')
+    // css
+    link(type='text/css', rel='stylesheet', href='../css/style.css')
+    // client socket.io
+    script(type='text/javascript', src='/socket.io/socket.io.js')
+    // title
+    title JeuMulti | #{nomPage}
+
+  script(type='text/javascript').
+    (function(window, io){
+
+    var dessinDesLogos = function(data){
+    
+    // crea containerLogos
+    var containerLogos = document.createElement("div");
+    containerLogos.id = data.nom;
+    containerLogos.style.width = data.width+'px';
+    containerLogos.style.height = data.height+'px';
+    containerLogos.style.backgroundColor = data.backgroundColor;
+    
+    // crea imgLogo
+    var imgLogo = document.createElement("img");
+    imgLogo.id = 'imgLogo';
+    imgLogo.src = '../img/' + data.nomImage;
+    containerLogos.appendChild(imgLogo);
+    
+    document.body.appendChild(containerLogos);
+    } // FIN dessin des Logos
+    
+    var dessinUnJoueur = function(data){
+    for (prop in data){
+    //si un jour est parti supprime son emplacement
+    var divVide = document.getElementById(undefined);
+    if (divVide) {
+    window.document.body.removeChild(divVide);
+    };
+    var containerDUnJoueur = document.createElement('div');
+    containerDUnJoueur.id = data[prop].publicId;
+    $(containerDUnJoueur).attr( "name", "#{pseudo}");
+    $(containerDUnJoueur).addClass('containerDUnJoueur');
+    //containerDUnJoueur.style.width = data[prop].width+'px';
+    containerDUnJoueur.style.display = data[prop].display;
+    containerDUnJoueur.style.backgroundColor = data[prop].backgroundColor;
+    // crea pseudo
+    var pseudo = document.createElement("p");
+    containerDUnJoueur.appendChild(pseudo);
+    pseudo.innerHTML = 'Joueur en Ligne : ' + data[prop].pseudo;
+    // crea bonne reponse
+    var bonneRep = document.createElement("p");
+    $(bonneRep).addClass('bonneRep'+data[prop].publicId);
+    bonneRep.innerHTML = 'Bonne réponse partie en cours : ' + data[prop].bonneReponse;
+    containerDUnJoueur.appendChild(bonneRep);
+    // crea mauvaise reponse
+    var mauvaiseRep = document.createElement("p");
+    $(mauvaiseRep).addClass('mauvaiseRep'+data[prop].publicId);
+    mauvaiseRep.innerHTML = 'Mauvaise réponse partie en cours : ' + data[prop].mauvaiseReponse;
+    containerDUnJoueur.appendChild(mauvaiseRep);
+    document.body.appendChild(containerDUnJoueur);
+    }
+    }; // FIN dessin des Logos
+
+
+
+
+
+
+    window.addEventListener('DOMContentLoaded',function(){
+    ////////////////////////////////////////////////////////////////
+    var socket = io('http://192.168.1.86:8888/');///////////////////
+    ////////////////////////////////////////////////////////////////
+ 
+ 
+ 
+ 
+ 
+ 
+    // RECU Un ///////////////////////////////////////////
+    socket.on('envoisUn', function(data){
+    //dessinDesLogos(data.lesLogos) //envois aux autres
+    dessinUnJoueur(data);
+    });
+    
+    // RECU Deux /////////////////////////////////////////
+    socket.on('envoisDeux', function(data){
+    
+    dessinDesLogos(data.lesLogos); //envois a soit
+    dessinUnJoueur(data.tableauJoueurs);
+    
+    $("#leForm").submit(function(event) {
+    event.preventDefault();
+    // Récupérer la Valeur de la Réponse
+    var laRep =  $(this).find("input[name='laRep']").val();
+    // remettre le champs texte vide
+    $(this).find("input[name='laRep']").val('');
+    
+    // ENVOIS Trois ////////////////////////////////////////
+    socket.emit('envoisTrois', {laRep:laRep})
+    
+    }); //FIN evenement
+    }); //FIN envois Deux
+    
+    // envoisQuatre ///////////////////////////////////////
+    socket.on('envoisQuatre', function(data){
+    
+      //changement des resultats reponses
+      $('.bonneRep'+data.id).html('Bonne réponse partie en cours : ' + data.bonneReponse);
+      $('.mauvaiseRep'+data.id).html('Mauvaise réponse partie en cours : ' + data.mauvaiseReponse);
+    
+      //changement de la couleur
+      var containerJoueur = document.getElementById(data.id);
+      //console.log(containerJoueur);
+      containerJoueur.style.backgroundColor = data.backgroundColor;
+      
+      if(data.bonneReponse == 10){
+      $("#containerLogos").html("<h1>La partie a été gagner!</h1>");
+      }
+      
+      //changement du logo
+      var imgLogo = document.getElementById("imgLogo");
+      imgLogo.src = '../img/' + data.nomImage;
+    });
+    
+    // Deconnexion /////////////////////////////////////////
+    socket.on('leftTheGame', function(data){
+    var divToDelete = document.getElementById(data.id.publicId);
+    window.document.body.removeChild(divToDelete);
+    });
+    window.addEventListener('beforeunload', function(){
+    socket.emit('disconnect');
+    });
+
+    }); //FIN DOMContentLoaded
+    
+    })(window, io);
+
+  body
+    nav
+      ul
+        li
+          a(href='/') Accueil / Regle du jeu
+        |                 
+        li
+          a(href='/connexion') Connexion / Jouer
+        |                 
+        li
+          a(href='/inscription') Inscription
+        |                 
+        li
+          a(href='/score') Scores  
+    h1 #{titre}
+    #containerSaisie
+      form(method='get', id='leForm', type='submit')
+        label Réponse : 
+          input(type='text', name='laRep', id='laRep')
+        input(type='submit', value='Valider', id='bouton')

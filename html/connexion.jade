@@ -1,0 +1,11 @@
+include ../includes/head.jade      
+h1 #{nomPage}
+  
+form(action='/connexion-verification/', method='post')
+    label Pseudo : 
+    input(type='text', name='pseudo')
+    label Mot de passe : 
+    input(type='password', name='mdp')
+    input(type='submit', value='Confirmer')
+
+p#infos #{message}
